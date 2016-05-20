@@ -87,6 +87,18 @@ class Chromosome {
         cityList[index] = value;
     }
 
+    public String toString(){
+        String str = "";
+
+        str += "{cost: " + getCost() + ", ";
+        for (int city: cityList) {
+            str += city + ", ";
+        }
+        str += "}";
+
+        return str;
+    }
+
     /**
      * Sort the chromosomes by their cost.
      *
