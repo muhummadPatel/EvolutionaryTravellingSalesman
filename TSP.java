@@ -110,8 +110,64 @@ public class TSP {
         System.out.println(content);
     }
 
+    public static Chromosome generateMutant(Chromosome parent) {
+        //Inversion mutation
+        Random random = new Random();
+        int pos1 = random.nextInt(cities.length);
+        int pos2 = pos1;
+        while (pos2 == pos1) {
+            pos2 = random.nextInt(cities.length);
+        }
+        int start = Math.min(pos1, pos2);
+        int end = Math.max(pos1, pos2);
+        // System.out.println(start + " " + end);
+
+        Chromosome mutant = new Chromosome(cities);
+        for (int pos = 0; pos < cities.length; pos++) {
+            if (pos < start || pos > end) {
+                mutant.setCity(pos, parent.getCity(pos));
+            } else {
+                mutant.setCity(pos, parent.getCity(end - (pos-start)));
+            }
+        }
+
+        return mutant;
+    }
+
     public static void evolve() {
         //Write evolution code here.
+        //Select parent
+        Chromosome.sortChromosomes(chromosomes, chromosomes.length);
+        Chromosome parent = chromosomes[0];
+        // Chromosome mutant = generateMutant(parent);
+        // System.out.println(parent);
+        // System.out.println(mutant);
+        // System.out.println();
+
+        //Mutate to form offspring
+        Chromosome[] offspring = new Chromosome[populationSize];
+        for (int i = 0; i < populationSize; i++) {
+            offspring[i] = generateMutant(parent);
+        }
+
+        //Evaluate all individuals
+        Chromosome[] allIndividuals = new Chromosome[chromosomes.length + offspring.length];
+        for (int c = 0; c < allIndividuals.length; c++) {
+            if (c < chromosomes.length) {
+                allIndividuals[c] = chromosomes[c];
+            } else {
+                allIndividuals[c] = offspring[c - chromosomes.length];
+            }
+        }
+        for (Chromosome individual: allIndividuals) {
+            individual.calculateCost(cities);
+        }
+
+        //Select the next generation
+        Chromosome.sortChromosomes(allIndividuals, allIndividuals.length);
+        for (int i = 0; i < chromosomes.length; i++) {
+            chromosomes[i] = allIndividuals[i];
+        }
     }
 
     /**
