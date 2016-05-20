@@ -1,11 +1,16 @@
+RUNS=5
+
 default: clean build run
 
 clean:
-	rm *.class
-	rm *.out
+	rm -f *.class
+	rm -f *.out
 
 build: *.java
 	javac *.java
 
 run:
-	java TSP 5 y
+	java TSP $(RUNS)
+
+gui:
+	java TSP $(RUNS) y
