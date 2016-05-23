@@ -123,6 +123,8 @@ public class TSP {
         // System.out.println(start + " " + end);
 
         Chromosome mutant = new Chromosome(cities);
+
+        //Inversion
         for (int pos = 0; pos < cities.length; pos++) {
             if (pos < start || pos > end) {
                 mutant.setCity(pos, parent.getCity(pos));
@@ -131,32 +133,39 @@ public class TSP {
             }
         }
 
+
         return mutant;
     }
 
     public static void evolve() {
         //Write evolution code here.
         //Select parent
+        int numParents = 1;
         Chromosome.sortChromosomes(chromosomes, chromosomes.length);
         Chromosome parent = chromosomes[0];
+        Chromosome[] originalPop = new Chromosome[numParents];
+        for (int i = 0; i < originalPop.length; i++) {
+            originalPop[i] = chromosomes[i];
+        }
         // Chromosome mutant = generateMutant(parent);
         // System.out.println(parent);
         // System.out.println(mutant);
         // System.out.println();
 
         //Mutate to form offspring
-        Chromosome[] offspring = new Chromosome[populationSize];
-        for (int i = 0; i < populationSize; i++) {
+        int numOffspring = 100 - numParents;
+        Chromosome[] offspring = new Chromosome[numOffspring];
+        for (int i = 0; i < offspring.length; i++) {
             offspring[i] = generateMutant(parent);
         }
 
         //Evaluate all individuals
-        Chromosome[] allIndividuals = new Chromosome[chromosomes.length + offspring.length];
+        Chromosome[] allIndividuals = new Chromosome[originalPop.length + offspring.length];
         for (int c = 0; c < allIndividuals.length; c++) {
-            if (c < chromosomes.length) {
-                allIndividuals[c] = chromosomes[c];
+            if (c < originalPop.length) {
+                allIndividuals[c] = originalPop[c];
             } else {
-                allIndividuals[c] = offspring[c - chromosomes.length];
+                allIndividuals[c] = offspring[c - originalPop.length];
             }
         }
         for (Chromosome individual: allIndividuals) {
