@@ -1,4 +1,4 @@
-RUNS=5
+RUNS=100
 
 default: clean build run
 
