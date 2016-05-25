@@ -110,8 +110,14 @@ public class TSP {
         System.out.println(content);
     }
 
+    /*
+     *  Generates a mutant chromosome from the given parent using inversion
+     *  mutation. Other mutation strategies were explored and mutation was found
+     *  to work best for this problem. Some of the other strategies tried, have
+     *  been commented out and kept here for interest.
+     */
     public static Chromosome generateMutant(Chromosome parent) {
-        //Inversion mutation
+        // pick two random points in the chromosome
         Random random = new Random();
         int pos1 = random.nextInt(cities.length);
         int pos2 = pos1;
@@ -120,11 +126,11 @@ public class TSP {
         }
         int start = Math.min(pos1, pos2);
         int end = Math.max(pos1, pos2);
-        // System.out.println(start + " " + end);
 
         Chromosome mutant = new Chromosome(cities);
 
-        //Inversion
+        // Inversion
+        // reverses a subset of the chromosome (changes two edges in the tour)
         for (int pos = 0; pos < cities.length; pos++) {
             if (pos < start || pos > end) {
                 mutant.setCity(pos, parent.getCity(pos));
@@ -133,34 +139,58 @@ public class TSP {
             }
         }
 
+        //Transposition
+        // mutant.setCity(start, parent.getCity(end));
+        // mutant.setCity(end, parent.getCity(start));
+
+        //Translocation
+        // for (int i = 0; i < cities.length; i++) {
+        // 	if (i < start || i > end) {
+        // 		mutant.setCity(i, parent.getCity(i));
+        // 	} else if (i < end) {
+        // 		mutant.setCity(i, parent.getCity(i+1));
+        // 	} else if (i == end) {
+        // 		mutant.setCity(i, parent.getCity(start));
+        // 	}
+        // }
 
         return mutant;
     }
 
+    /*
+     * Randomly selects one of the top numParents chromosomes.
+     */
+    public static Chromosome getParent(int numParents) {
+        Random random = new Random();
+        return chromosomes[random.nextInt(numParents)];
+    }
+
+    /*
+     * Runs through one generation of the algorithm. Selects parents, mutates to
+     * form offspring, evaluates all the individuals, and selects the survivors/
+     * next generation.
+     * NOTE: In each generation, a maximum of 100 chromosomes are evaluated (as
+     * per the assignment specifications).
+     */
     public static void evolve() {
-        //Write evolution code here.
-        //Select parent
+        //Select parents
         int numParents = 1;
-        Chromosome.sortChromosomes(chromosomes, chromosomes.length);
-        Chromosome parent = chromosomes[0];
         Chromosome[] originalPop = new Chromosome[numParents];
         for (int i = 0; i < originalPop.length; i++) {
             originalPop[i] = chromosomes[i];
         }
-        // Chromosome mutant = generateMutant(parent);
-        // System.out.println(parent);
-        // System.out.println(mutant);
-        // System.out.println();
 
         //Mutate to form offspring
         int numOffspring = 100 - numParents;
         Chromosome[] offspring = new Chromosome[numOffspring];
         for (int i = 0; i < offspring.length; i++) {
+            Chromosome parent = getParent(numParents);
             offspring[i] = generateMutant(parent);
         }
 
         //Evaluate all individuals
-        Chromosome[] allIndividuals = new Chromosome[originalPop.length + offspring.length];
+        Chromosome[] allIndividuals;
+        allIndividuals = new Chromosome[originalPop.length + offspring.length];
         for (int c = 0; c < allIndividuals.length; c++) {
             if (c < originalPop.length) {
                 allIndividuals[c] = originalPop[c];
@@ -173,7 +203,7 @@ public class TSP {
         }
 
         //Select the next generation
-        Chromosome.sortChromosomes(allIndividuals, allIndividuals.length);
+        Chromosome.sortChromosomes(allIndividuals, chromosomes.length);
         for (int i = 0; i < chromosomes.length; i++) {
             chromosomes[i] = allIndividuals[i];
         }
