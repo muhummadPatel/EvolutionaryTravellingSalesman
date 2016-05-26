@@ -1,8 +1,8 @@
 ##Evolutionary Computation: *Evolutionary Algorithms to Solve the Dynamic Traveling Salesman Problem*
 
-**Name :** Muhummad Yunus Patel
-**Student# :** PTLMUH006
-**Date :** 26-May-2016
+* **Name :** Muhummad Yunus Patel
+* **Student# :** PTLMUH006
+* **Date :** 26-May-2016
 
 *Note:* Should you require any clarification, please feel free to contact me at muhummad.patel@gmail.com. Thank you. :)
 
