@@ -1,6 +1,6 @@
 RUNS=100
 
-default: clean build run
+default: build run
 
 clean:
 	rm -f *.class
